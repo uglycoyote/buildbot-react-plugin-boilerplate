@@ -6,6 +6,13 @@ var TsConfigPathsPlugin = require('awesome-typescript-loader').TsConfigPathsPlug
 var BitBarWebpackProgressPlugin = require("bitbar-webpack-progress-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
+const extractLess = new ExtractTextPlugin({
+    filename: "styles.css",
+    // might want to use style-loader for development?  
+    //   it lets you hot-reload styles? If so, this next commented line prevents styles.css from getting built statically.
+    // disable: process.env.NODE_ENV === "development"
+});
+
 module.exports = {
 
     entry: {
@@ -24,7 +31,7 @@ module.exports = {
         //     { from: 'assets', to: 'build/static/assets'},
         //     ]),
         new BitBarWebpackProgressPlugin(),
-        new ExtractTextPlugin("./buildbot_react_plugin_boilerplate/static/styles.css")
+        extractLess
     ],
           
 
@@ -68,7 +75,15 @@ module.exports = {
             },
             {
                 test: /\.less$/,
-                loader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader")
+                use: extractLess.extract({
+                use: [{
+                    loader: "css-loader"
+                }, {
+                    loader: "less-loader"
+                }],
+                // use style-loader in development
+                fallback: "style-loader"
+                })
             }
 
 
