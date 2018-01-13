@@ -1,5 +1,7 @@
 
 import { SampleReactComponent } from "./SampleReactComponent"
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 
 console.log ( "Hello from the buildbot-react-plugin-boilerplate!" )
 
@@ -78,7 +80,7 @@ class ReactPluginBoilerplateController {
 
         this.dataAccessor = dataService.open().closeOnDestroy($scope)
 
-        this.changeLimit = 30;
+        this.changeLimit = 50;
 
         this.changes = this.dataAccessor.getChanges({limit: this.changeLimit, order: '-changeid'})
 

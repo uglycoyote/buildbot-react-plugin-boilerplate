@@ -5,6 +5,7 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 var TsConfigPathsPlugin = require('awesome-typescript-loader').TsConfigPathsPlugin;
 var BitBarWebpackProgressPlugin = require("bitbar-webpack-progress-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin")
 
 const extractLess = new ExtractTextPlugin({
     filename: "styles.css",
@@ -12,6 +13,16 @@ const extractLess = new ExtractTextPlugin({
     //   it lets you hot-reload styles? If so, this next commented line prevents styles.css from getting built statically.
     // disable: process.env.NODE_ENV === "development"
 });
+
+function isExternal(module) {
+  var context = module.context;
+
+  if (typeof context !== 'string') {
+    return false;
+  }
+
+  return context.indexOf('node_modules') !== -1;
+}
 
 module.exports = {
 
@@ -24,6 +35,15 @@ module.exports = {
         filename: "[name].js"
     },
     plugins: [
+
+        // Separate "vendors" bundle for external libraries?          
+        // new CommonsChunkPlugin({
+        //     name: 'vendors',
+        //     minChunks: function(module) {
+        //         return isExternal(module);
+        //     }
+        // }),
+
         // might want to add something like this for copying assets like images, but to where?
         // new CopyWebpackPlugin([
         //     // Copy over React and any other node modules which are not being bundled by webpack.
@@ -105,10 +125,10 @@ module.exports = {
     // assume a corresponding global variable exists and use that instead.
     // This is important because it allows us to avoid bundling all of our
     // dependencies, which allows browsers to cache those libraries between builds.
-    externals: {
-        "react": "React",
-        "react-dom": "ReactDOM"
-    },
+    // externals: {
+    //     "react": "React",
+    //     "react-dom": "ReactDOM"
+    // },
 
     // node: {
     //    fs: "empty"
