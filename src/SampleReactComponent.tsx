@@ -9,6 +9,7 @@ interface Change {
 	author : string;
 	comments : string;
 	revision : string;
+	files : string[];
 }
 
 class SampleReactComponentProps {
@@ -22,6 +23,16 @@ class ChangeRowProps {
 export class ChangeRow extends React.Component<ChangeRowProps, any> {
 
 	render() {
+
+		const maxCommentsLength = 512;
+
+		let comments = this.props.change.comments
+		if ( comments.length > maxCommentsLength ) {
+			comments = comments.substring(0, 512) + "...";
+		}
+
+		let files = this.props.change.files.length + " files"
+
 		return <tr key={this.props.change.revision}>
 			<td key="revision">
 				{this.props.change.revision}
@@ -30,7 +41,10 @@ export class ChangeRow extends React.Component<ChangeRowProps, any> {
 				{this.props.change.author}
 			</td>
 			<td key="comments">
-				{this.props.change.comments}
+				{comments}
+			</td>
+			<td key="files">
+				{files}
 			</td>
 		</tr>
 	}
@@ -39,6 +53,8 @@ export class ChangeRow extends React.Component<ChangeRowProps, any> {
 export class SampleReactComponent extends React.Component<SampleReactComponentProps, any> {
   render() { 
 
+  	console.log( "props", this.props );
+
   	let changeRows = this.props.changes.map( change => {
   		return <ChangeRow key={change.revision} change={change}/>
   	} );
@@ -46,6 +62,14 @@ export class SampleReactComponent extends React.Component<SampleReactComponentPr
     return <div>
     	<p>Showing {this.props.changes.length} changes:</p>
     	<table>
+    		<thead>
+    		<tr>
+    			<th>Revision</th>
+    			<th>Author</th>
+    			<th>Description</th>
+				<th>Files</th>
+			</tr>
+    		</thead>
     		<tbody>
 	    		{changeRows}
     		</tbody>
