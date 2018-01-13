@@ -53,7 +53,7 @@ install these things if you don't have them already
 
 make a clone of buildbot sources
 
-```git clone <https://github.com/bb-nl/buildbot.git>```
+```git clone https://github.com/bb-nl/buildbot.git```
 
 outside of that directory, make a virtualenv sandbox directory.  All ```pip install```s will install into that directory rather than the global python libs directory.
 
