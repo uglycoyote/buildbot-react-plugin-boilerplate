@@ -2,6 +2,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 // import * from '../typings/buildbot'
+import {Change, Build} from 'BuildbotJsonInterfaces'
 
 // // stuff like this should go into some common .d.ts that describes the common data structures
 // //   in buildbot so that Typescript can take advantage of this info for auto-completion and 
@@ -32,8 +33,7 @@ export class ChangeRow extends React.Component<ChangeRowProps, any> {
 			comments = comments.substring(0, 512) + "...";
 		}
 
-
-		let files = this.props.change.files.length + " files"
+		let files = this.props.change.files.length + " files";
 
 		return <tr key={this.props.change.revision}>
 			<td key="revision">
