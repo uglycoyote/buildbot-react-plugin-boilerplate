@@ -28,6 +28,12 @@ The idea behind this repo is to establish a way to use newer web tech for your b
 
 In my own case, I was driven in this direction by performance issues with Angular that I could not find any good way to get past, besides just not using Angular.   
 
+This plugin sample is using:
+
+* **Webpack** as the building/bundling solution
+* **React** cooperating together with the existing **Angular** setup
+* **Typescript** to provide additional compile time type checking and IDE assistance, though you can easily write in plain JS if you like 
+
 ## Developing A Buildbot Plugin Locally
 
 You *could* develop your new plugin directly on your buildbot server, but you may not want to for various reasons.  Fortunately there's a good workflow where you can develop locally using data from a remote server.
@@ -127,3 +133,9 @@ In this repo, the setup is similar, except
 
 
 * The Controller is a bit slimmer, since more of the view logic is contained in the React components.  The controller's main role now is to get the data from the services and forward it as **props** to React.  The controller may want to massage the data a bit get it into a form that's more appropriate for the view.  Ideally the **props** should only change when you want the view to change, so if there's extra data returned by the ```dataService``` that your view doesn't need, the controller can play the role of filtering that into a more view-relevant form.
+
+ ### Taking Advantage of Typescript
+
+I have included a file 
+
+![](https://github.com/uglycoyote/buildbot-react-plugin-boilerplate/blob/master/documentation/TypescriptBuildbotCompletion.gif?raw=true)

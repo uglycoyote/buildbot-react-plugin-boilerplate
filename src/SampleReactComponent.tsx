@@ -1,16 +1,17 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+// import * from '../typings/buildbot'
 
-// stuff like this should go into some common .d.ts that describes the common data structures
-//   in buildbot so that Typescript can take advantage of this info for auto-completion and 
-//   compile-time checking.
-interface Change {
-	author : string;
-	comments : string;
-	revision : string;
-	files : string[];
-}
+// // stuff like this should go into some common .d.ts that describes the common data structures
+// //   in buildbot so that Typescript can take advantage of this info for auto-completion and 
+// //   compile-time checking.
+// interface Change {
+// 	author : string;
+// 	comments : string;
+// 	revision : string;
+// 	files : string[];
+// }
 
 class SampleReactComponentProps {
 	changes : Change[];
@@ -30,6 +31,7 @@ export class ChangeRow extends React.Component<ChangeRowProps, any> {
 		if ( comments.length > maxCommentsLength ) {
 			comments = comments.substring(0, 512) + "...";
 		}
+
 
 		let files = this.props.change.files.length + " files"
 
