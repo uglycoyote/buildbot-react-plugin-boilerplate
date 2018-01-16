@@ -67,7 +67,7 @@ outside of that directory, make a virtualenv sandbox directory.  All ```pip inst
 
 Whenever you are developing buildbot you must **activate** the sandbox
 
-```sandbox\Scripts\activate```
+```source sandbox/bin/activate```  (or, on windows, ```sandbox\Scripts\activate```)
 
 With the sandbox activated, ```cd``` into the ```buildbot``` directory that you cloned and install ```master``` and ```worker```
 
@@ -102,6 +102,7 @@ change everywhere the name of this plugin occurs to whatever you want to call yo
 
 * any occurrences in setup.py
 * the subdirectory ```buildbot_react_plugin_boilerplate```, containing the ```__init__.py file```
+* in the ```webpack.config.js``` change the line ``` path: path.resolve(__dirname, "./buildbot_react_plugin_boilerplate/static")```
 
 **Attention:** although the repo is named with hypens separating the words (as per javascript/npm convention), the python package names/identifiers are using underbars as separators (as per python convention)
 
@@ -114,6 +115,25 @@ pip install -e .
 ```
 
 Once you have done the ```pip install```, buildbot should automatically start using your new plugin without you needing to do any other explicit hookup (I was a bit surprised by this as I thought it would require mentioning your new plugin in ```master.cfg``` but from my experience that's not necessary)
+
+### Fixing up Javascript to use your own plugin name
+
+I apologize — This step is somewhat tedious and error-prone due to the number of places where you need to change the name and the fact that different identifiers containing the plugin are following different conventions (as far as whether they use camelcase, underbars, or hyphens as word separators, or whether the word "buildbot" appears in the identifiers.).   The lack of consistency in this regard makes it a bit hard to  do a search-and-replace operation.
+
+When trying to get the plugin running, keep your DevTools open in Chrome and watch for error messages in the console which will give you a lot of hints about what went wrong if you forgot to change a name somewhere.
+
+On the javascript side, you'll need to rename the following
+
+* The three classes in the Main.js:
+  * The one under the comment ```//register the new module```
+  * The class ending with ```Config```
+    * within this class change the name under ```// name of the state```
+    * change the ```caption```s under "Menu Configuration" and "Configuration"
+  * The class ending with ```Controller```
+  *  ```// Register new state``` 
+    * change the URL
+    * change the controller class name to match your new Controller's name
+* At the end of the file, there's some lines which register those classes with Angular, which must be changed to reflect the new names of the classes.
 
 ## How React and Angular are Fitting Together
 
