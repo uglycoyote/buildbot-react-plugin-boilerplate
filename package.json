@@ -8,6 +8,10 @@
     "email": "uglycoyote@gmail.com",
     "url": ""
   },
+  "scripts": {
+    "watch": "webpack --watch",
+    "build": "webpack"
+  },
   "keywords": [],
   "dependencies": {
     "@types/react": "^16.0.5",

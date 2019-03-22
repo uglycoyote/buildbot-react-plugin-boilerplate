@@ -16,7 +16,7 @@ iterate:
 
 ```webpack --watch```
 
-## Why? 
+## Why?
 
 The tech used for the Buildbot 9 web UI is already starting to show its age.  Currently it is using:
 
@@ -24,21 +24,21 @@ The tech used for the Buildbot 9 web UI is already starting to show its age.  Cu
 * **coffeescript** as an alternative to javascript
 * **AngularJS** which has been superceded by Angular 2, which is nearly a full rewrite
 
-The idea behind this repo is to establish a way to use newer web tech for your buildbot plugin, even though buildbot is (for now at least) sticking with these older technologies.  It's totally possible to mix the new and the old. 
+The idea behind this repo is to establish a way to use newer web tech for your buildbot plugin, even though buildbot is (for now at least) sticking with these older technologies.  It's totally possible to mix the new and the old.
 
-In my own case, I was driven in this direction by performance issues with Angular that I could not find any good way to get past, besides just not using Angular.   
+In my own case, I was driven in this direction by performance issues with Angular that I could not find any good way to get past, besides just not using Angular.
 
 This plugin sample is using:
 
 * **Webpack** as the building/bundling solution
 * **React** cooperating together with the existing **Angular** setup
-* **Typescript** to provide additional compile time type checking and IDE assistance, though you can easily write in plain JS if you like 
+* **Typescript** to provide additional compile time type checking and IDE assistance, though you can easily write in plain JS if you like
 
 ## Developing A Buildbot Plugin Locally
 
 You *could* develop your new plugin directly on your buildbot server, but you may not want to for various reasons.  Fortunately there's a good workflow where you can develop locally using data from a remote server.
 
-In my case, I'm developing my plugin on a Windows machine for deployment to a buildbot server that's running Ubuntu, so it's possible to develop in whatever OS environment you are comfortable.  
+In my case, I'm developing my plugin on a Windows machine for deployment to a buildbot server that's running Ubuntu, so it's possible to develop in whatever OS environment you are comfortable.
 
 These notes are somewhat based on [Pierre Tardy's tutorial](https://medium.com/buildbot/buildbot-ui-plugin-for-python-developer-ef9dcfdedac0), also on [Running buildbot with VirtualEnv](http://trac.buildbot.net/wiki/RunningBuildbotWithVirtualEnv)
 
@@ -98,7 +98,7 @@ get this repo
 
 ```git clone https://github.com/uglycoyote/buildbot-react-plugin-boilerplate.git```
 
-change everywhere the name of this plugin occurs to whatever you want to call your new plugin.  You probably want to do this before you ```pip install``` the thing, at least the parts which are going to influence the python name of the plugin (names on the javascript side can be changed after you have it working).  The names relevant to python are 
+change everywhere the name of this plugin occurs to whatever you want to call your new plugin.  You probably want to do this before you ```pip install``` the thing, at least the parts which are going to influence the python name of the plugin (names on the javascript side can be changed after you have it working).  The names relevant to python are
 
 * any occurrences in setup.py
 * the subdirectory ```buildbot_react_plugin_boilerplate```, containing the ```__init__.py file```
@@ -110,7 +110,7 @@ then...
 
 ```
 npm install
-webpack
+npm run webpack
 pip install -e .
 ```
 
@@ -130,14 +130,14 @@ On the javascript side, you'll need to rename the following
     * within this class change the name under ```// name of the state```
     * change the ```caption```s under "Menu Configuration" and "Configuration"
   * The class ending with ```Controller```
-  *  ```// Register new state``` 
+  *  ```// Register new state```
     * change the URL
     * change the controller class name to match your new Controller's name
 * At the end of the file, there's some lines which register those classes with Angular, which must be changed to reflect the new names of the classes.
 
 ## How React and Angular are Fitting Together
 
-Buildbot's UI is based an Angular, but this plugin shows how it is possible have React cooperating with Angular.  
+Buildbot's UI is based an Angular, but this plugin shows how it is possible have React cooperating with Angular.
 
 The structure of other buildbot plugins is essentially
 
@@ -148,7 +148,7 @@ The structure of other buildbot plugins is essentially
 
 In this repo, the setup is similar, except
 
-* rather than using HTML templates, most of the HTML is being produced by a hierarchy of **React Components** 
+* rather than using HTML templates, most of the HTML is being produced by a hierarchy of **React Components**
 * the top level React Component gets its data (its **props**) from the Angular Controller, which calls ```ReactDOM.render``` to invoke React to update
 
 
@@ -156,9 +156,9 @@ In this repo, the setup is similar, except
 
  ### Taking Advantage of Typescript
 
-I have included a file ```BuildbotJsonInterfaces.ts``` containing a bunch of interface descriptions for the data which is available using the JSON API.  These interfaces are automatically generated by requesting URL's such as http://nine.buildbot.net/api/v2/changes?limit=10 and then using [json2ts](https://github.com/GregorBiswanger/json2ts) to convert the json into typescript interfaces.  
+I have included a file ```BuildbotJsonInterfaces.ts``` containing a bunch of interface descriptions for the data which is available using the JSON API.  These interfaces are automatically generated by requesting URL's such as http://nine.buildbot.net/api/v2/changes?limit=10 and then using [json2ts](https://github.com/GregorBiswanger/json2ts) to convert the json into typescript interfaces.
 
-By importing the interfaces using 
+By importing the interfaces using
 
 ```import {Change, Build} from 'BuildbotJsonInterface'```
 

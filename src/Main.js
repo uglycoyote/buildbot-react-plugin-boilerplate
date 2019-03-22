@@ -1,26 +1,20 @@
-
-import { SampleReactComponent } from "./SampleReactComponent"
+import {
+    SampleReactComponent
+} from "./SampleReactComponent"
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-console.log ( "Hello from the buildbot-react-plugin-boilerplate!" )
+console.log("Hello from the buildbot-react-plugin-boilerplate!")
 
-// Register new module
-class ReactPluginBoilerplate {
-    constructor() {
-        return [
-            'ui.router',
-            'ui.bootstrap',
-            'ui.bootstrap.popover',
-            'ngAnimate',
-            'guanlecoja.ui',
-            'bbData'
-        ];
-    }
-}
-
-class ReactPluginBoilerplateConfig {
-    constructor($stateProvider, glMenuServiceProvider, bbSettingsServiceProvider, config) {
+var module = angular.module('buildbot_react_plugin_boilerplate', ['ui.router',
+    'ui.bootstrap',
+    'ui.bootstrap.popover',
+    'ngAnimate',
+    'guanlecoja.ui',
+    'bbData'
+])
+module.config(['$stateProvider', 'glMenuServiceProvider', 'bbSettingsServiceProvider', 'config',
+    ($stateProvider, glMenuServiceProvider, bbSettingsServiceProvider, config) => {
 
         // Config object coming in from the master.cfg
         //console.log( "config", config )
@@ -44,9 +38,7 @@ class ReactPluginBoilerplateConfig {
 
         // Register new state
         const state = {
-            controller: "reactPluginBoilerplateController",
-            controllerAs: "c",
-            template: "<div id='reactContent'></div>",
+            template: "<my-react-directive></my-react-directive>",
             //templateUrl: `react_plugin_boilerplate/views/${name}.html`,
             name,
             url: "/reactPluginBoilerplate",
@@ -55,7 +47,7 @@ class ReactPluginBoilerplateConfig {
 
         $stateProvider.state(state);
 
-        // bbSettingsServiceProvider.addSettingsGroup({ 
+        // bbSettingsServiceProvider.addSettingsGroup({
         //     name: 'reactPluginBoilerplate',
         //     caption: 'React Plugin Boilerplate related settings',
         //     items: [{
@@ -66,54 +58,36 @@ class ReactPluginBoilerplateConfig {
         //     }
         //     ]});
     }
-}
+])
+module.directive('myReactDirective', ['$q', '$window', 'dataService', 'bbSettingsService', 'resultsService', '$uibModal', '$timeout',
+    ($q, $window, dataService, bbSettingsService, resultsService,
+        $uibModal, $timeout) => {
+        function link(scope, element, attrs) {
 
-class ReactPluginBoilerplateController {
-    constructor($scope, $element, $q, $window, dataService, bbSettingsService, resultsService,
-        $uibModal, $timeout) {
-    
-        // Find the div.reactContent in the template (note, this is some kind 
-        //  of angular data structure, not an actual dom element.
-        const reactContentElement = $element.find('#reactContent');
-        // This is an actual DOM element that React needs 
-        this.reactRawElement = angular.element(reactContentElement).get(0);
+            /* create an instance of the data accessor */
+            var dataAccessor = dataService.open().closeOnDestroy(scope);
 
-        this.dataAccessor = dataService.open().closeOnDestroy($scope)
+            /* get some changes and put the in the react properties */
+            var changes = dataAccessor.getChanges({
+                limit: 50,
+                order: '-changeid'
+            })
+            var props = {
+                changes: changes
+            }
+            var react_element = React.createElement(SampleReactComponent, props, null)
 
-        this.changeLimit = 50;
+            function update() {
+                ReactDOM.render(
+                    react_element,
+                    element.get(0));
+            }
+            changes.onChange = () => update()
+            update()
+        }
 
-        this.changes = this.dataAccessor.getChanges({limit: this.changeLimit, order: '-changeid'})
-
-		this.changes.onChange = () => this.update()
-        
-        this.renderReact();
-
+        return {
+            link: link
+        };
     }
-
-    update() {
-    	console.log ("Updating React View");
-
-    	// your plugin might do some stuff in here to massage the data into a more
-    	//  view-amenable form before calling the render function
-
-    	this.renderReact();
-    }
-
-    renderReact() {
-	    var props = {changes: this.changes}
-
-        ReactDOM.render(
-            React.createElement(SampleReactComponent, props, null),
-              this.reactRawElement
-        );
-	}
-
-
-}
-
-
-
-angular.module('buildbot_react_plugin_boilerplate', new ReactPluginBoilerplate())
-.config(['$stateProvider', 'glMenuServiceProvider', 'bbSettingsServiceProvider', 'config', ReactPluginBoilerplateConfig])
-.controller('reactPluginBoilerplateController', ['$scope', '$element', '$q', '$window', 'dataService', 'bbSettingsService', 'resultsService', '$uibModal', '$timeout', ReactPluginBoilerplateController]);
-
+])
