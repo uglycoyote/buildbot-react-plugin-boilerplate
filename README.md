@@ -8,13 +8,12 @@ install:
 
 ```
 npm install
-webpack
-pip install -e .
+pip install -e .  # this should run webpack automatically
 ```
 
 iterate:
 
-```webpack --watch```
+```npm run watch```
 
 ## Why?
 
@@ -110,11 +109,18 @@ then...
 
 ```
 npm install
-npm run webpack
 pip install -e .
 ```
 
-Once you have done the ```pip install```, buildbot should automatically start using your new plugin without you needing to do any other explicit hookup (I was a bit surprised by this as I thought it would require mentioning your new plugin in ```master.cfg``` but from my experience that's not necessary)
+Because we are using ``gulp dev proxy``, the proxy uses all the plugin available in the virtualenv to build the UI, so `pip install` is only needed to start working (and restart `gulp dev proxy`).
+
+When running in a real buildbot, you need to change the master.cfg to configure your plugin
+
+```python
+  c['www']['plugins']['buildbot_react_plugin_boilerplate'] = {}
+```
+`buildbot_react_plugin_boilerplate` being the name of the `www entry_point` in `setup.py`
+
 
 ### Fixing up Javascript to use your own plugin name
 
@@ -152,7 +158,11 @@ In this repo, the setup is similar, except
 * the top level React Component gets its data (its **props**) from the Angular Controller, which calls ```ReactDOM.render``` to invoke React to update
 
 
-* The Controller is a bit slimmer, since more of the view logic is contained in the React components.  The controller's main role now is to get the data from the services and forward it as **props** to React.  The controller may want to massage the data a bit get it into a form that's more appropriate for the view.  Ideally the **props** should only change when you want the view to change, so if there's extra data returned by the ```dataService``` that your view doesn't need, the controller can play the role of filtering that into a more view-relevant form.
+* We don't use a controller, but rather a custom directive, which is the way to connect with different UI framework in JS.  The directive has two roles:
+  * interconnect react and angular.js
+  * Get the buildbot data from the api and forward it as **props** to React.
+
+The directive may want to massage the data a bit get it into a form that's more appropriate for the view.  Ideally the **props** should only change when you want the view to change, so if there's extra data returned by the ```dataService``` that your view doesn't need, the directive can play the role of filtering that into a more view-relevant form.
 
  ### Taking Advantage of Typescript
 
