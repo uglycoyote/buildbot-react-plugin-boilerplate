@@ -1,3 +1,6 @@
+build/*
+*.log
+*.lock
 node_modules/*
 buildbot_react_plugin_boilerplate/*
 !/buildbot_react_plugin_boilerplate/__init__.py
