@@ -1,8 +1,15 @@
 import {
     SampleReactComponent
 } from "./SampleReactComponent"
+// @ts-ignore
+import
+    SampleVueComponent
+from "./SampleVueComponent.vue"
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import Vue from 'vue'
+
+var useReact=true;
 
 console.log("Hello from the buildbot-react-plugin-boilerplate!")
 
@@ -73,17 +80,34 @@ module.directive('myReactDirective', ['$q', '$window', 'dataService', 'bbSetting
                 order: '-changeid'
             })
             var props = {
-                changes: changes
+                changes
             }
-            var react_element = React.createElement(SampleReactComponent, props, null)
 
-            function update() {
-                ReactDOM.render(
-                    react_element,
-                    element.get(0));
+            if (useReact) {
+                var react_element = React.createElement(SampleReactComponent, props, null)
+                function update() {
+                    ReactDOM.render(
+                        react_element,
+                        element.get(0));
+                }
+                changes.onChange = () => update()
+                update()
+
+            } else {
+                var ComponentClass = Vue.extend(SampleVueComponent)
+                /* cannot pass directly the changes, as the magic
+                 of buildbot data module clashes with the magic of vue observers */
+                var data = {changes: []}
+                var e = new ComponentClass({
+                    data: data,
+                    el: element.get(0)
+                })
+                function update() {
+                    data.changes = changes.slice()
+                }
+                changes.onChange = () => update()
             }
-            changes.onChange = () => update()
-            update()
+
         }
 
         return {
