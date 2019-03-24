@@ -6,10 +6,11 @@ var TsConfigPathsPlugin = require('awesome-typescript-loader').TsConfigPathsPlug
 var BitBarWebpackProgressPlugin = require("bitbar-webpack-progress-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin")
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 const extractLess = new ExtractTextPlugin({
     filename: "styles.css",
-    // might want to use style-loader for development?  
+    // might want to use style-loader for development?
     //   it lets you hot-reload styles? If so, this next commented line prevents styles.css from getting built statically.
     // disable: process.env.NODE_ENV === "development"
 });
@@ -36,7 +37,7 @@ module.exports = {
     },
     plugins: [
 
-        // Separate "vendors" bundle for external libraries?          
+        // Separate "vendors" bundle for external libraries?
         // new CommonsChunkPlugin({
         //     name: 'vendors',
         //     minChunks: function(module) {
@@ -51,24 +52,29 @@ module.exports = {
         //     { from: 'assets', to: 'build/static/assets'},
         //     ]),
         new BitBarWebpackProgressPlugin(),
+        new VueLoaderPlugin(),
         extractLess
     ],
-          
+
 
     // Enable sourcemaps for debugging webpack's output.
     devtool: "source-map",
 
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: [".ts", ".tsx", ".js", ".json"],
+        extensions: [".ts", ".tsx", ".js", ".vue"],
         plugins: [
-            new TsConfigPathsPlugin(/* { tsconfig, compiler } */)
-        ]
-    
+            new TsConfigPathsPlugin(/* { tsconfig, compiler } */),
+        ],
+        alias: {
+            'vue$': 'vue/dist/vue.esm.js' // 'vue/dist/vue.common.js' for webpack 1
+          }
     },
 
     module: {
         rules: [
+            // all files ending with ".vue" are loaded using vue-loader
+            { test: /\.vue$/, loader: 'vue-loader' },
 
             {
                   // JS LOADER
@@ -84,14 +90,17 @@ module.exports = {
             { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
 
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            { 
-                enforce: "pre", 
-                test: /\.js$/, 
+            {
+                enforce: "pre",
+                test: /\.js$/,
                 loader: "source-map-loader",
             },
             {
                 test: /\.css$/,
-                loader: ExtractTextPlugin.extract("style-loader", "css-loader")
+                use: [
+                    'vue-style-loader',
+                    'css-loader'
+                  ]
             },
             {
                 test: /\.less$/,
@@ -107,12 +116,12 @@ module.exports = {
             }
 
 
-            // { 
+            // {
             //     test: /.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/,
             //     //use: "url-loader?limit=100000"
             //     use: [ {
             //         loader: "file-loader",
-            //         options: { 
+            //         options: {
             //             outputPath: "build/static/assets/"
             //         }
             //     }]
